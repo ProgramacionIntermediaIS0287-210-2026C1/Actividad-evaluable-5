@@ -1,0 +1,6 @@
+TIPO;ENUNCIADO;OPCIONES;RESPUESTAS_CORRECTAS
+SC;¿Cuál es la capital de Colombia?;Bogotá,Lima,Quito;Bogotá
+TF;Java es un lenguaje de programación orientado a objetos;;V
+FB;El principio SOLID que dicta que una clase debe tener una sola razón para cambiar es el principio de _______;;responsabilidad unica
+MC;¿Cuáles son lenguajes de programación tipados estáticamente?;Java,Python,C++,JavaScript;Java,C++
+INVALIDO;Esta fila debe fallar para probar el manejo de errores;;
