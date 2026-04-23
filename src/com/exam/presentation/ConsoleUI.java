@@ -48,6 +48,17 @@ public class ConsoleUI {
       double porcentaje = ((double) resultado.puntaje() / resultado.total()) * 100;
       System.out.println("Porcentaje de acierto: " + porcentaje + "%");
 
+      final String VERDE = "\u001B[32m";
+      final String ROJO = "\u001B[31m";
+
+
+// Condicional para saber si aprobó o no
+if (porcentaje >= 60) {
+    System.out.println(VERDE + "Estado: APROBADO" );
+} else {
+    System.out.println(ROJO + "Estado: REPROBADO" );
+}
+
     } catch (IllegalStateException | IllegalArgumentException e) {
       System.out.println("\n[ERROR]: " + e.getMessage());
     }
