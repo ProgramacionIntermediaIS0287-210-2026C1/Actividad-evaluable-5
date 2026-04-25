@@ -26,7 +26,7 @@ java -cp bin com.exam.Main
 ```
 La aplicación tiene dos formas de uso que son la consola y una interfaz gráfica con Java Swing,el programa inicia la versión de consola (`ConsoleUI`).
 El proyecto también incluye una versión visual llamada `SwingUI`. Para usarla, se debe modificar `Main.java` para iniciar `SwingUI` en lugar de `ConsoleUI`.
-Cuando se ejecutar nuevamente el proyecto, la aplicación se abrirá con ventanas gráficas.
+Cuando se ejecuta nuevamente el proyecto, la aplicación se abrirá con ventanas gráficas.
 
 
 
