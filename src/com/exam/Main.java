@@ -36,7 +36,10 @@ public class Main {
 
     // 4. Instanciación e inicio de la Presentación
       ConsoleUI ui = new ConsoleUI(appService);
-    ui.start();
+      ui.start();
+
+    // SwingUI ui = new SwingUI(appService);
+    // ui.start();
     
   }
 
