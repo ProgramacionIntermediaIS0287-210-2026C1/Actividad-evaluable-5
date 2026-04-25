@@ -35,7 +35,9 @@ public class Main {
         questionRepo, attemptRepo, attemptManager, gradingService);
 
     // 4. Instanciación e inicio de la Presentación
-    ConsoleUI ui = new ConsoleUI(appService);
+    //ConsoleUI ui = new ConsoleUI(appService);
+   //ui.start();
+    SwingUI ui = new SwingUI(appService);
     ui.start();
   }
 
