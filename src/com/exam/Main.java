@@ -38,8 +38,6 @@ public class Main {
       ConsoleUI ui = new ConsoleUI(appService);
       ui.start();
 
-    // SwingUI ui = new SwingUI(appService);
-    // ui.start();
     
   }
 
