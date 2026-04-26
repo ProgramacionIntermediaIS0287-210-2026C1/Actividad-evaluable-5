@@ -31,18 +31,25 @@ public class ExamApplicationService {
     this.gradingService = gService;
   }
 
-  public ExamAttemptDTO iniciarExamen(StudentId studentId) {
-    attemptManager.verificarIntentoActivo(studentId);
+ public ExamAttemptDTO iniciarExamen(StudentId studentId) {
+  attemptManager.verificarIntentoActivo(studentId);
 
-    List<Question> questions = questionRepo.findAll();
-    if (questions.isEmpty()) {
-      throw new IllegalStateException("El banco de preguntas está vacío.");
-    }
+  List<Question> questions = questionRepo.findAll();
 
-    ExamAttempt attempt = new ExamAttempt(studentId, questions);
-    attemptRepo.save(attempt); // Persiste el inicio
+  
+  if (questions.isEmpty()) {
+    throw new IllegalStateException("El banco de preguntas está vacío.");
+  }
 
-    return new ExamAttemptDTO(studentId, questions);
+  if (questions.size() > 50) {
+    throw new IllegalStateException("El banco de preguntas excede el límite máximo permitido");
+  }
+
+  ExamAttempt attempt = new ExamAttempt(studentId, questions);
+  attemptRepo.save(attempt);
+
+  return new ExamAttemptDTO(studentId, questions);
+}
   }
 
   public void responderPregunta(StudentId studentId, QuestionId qId, AnswerText answer) {
