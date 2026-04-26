@@ -1,6 +1,7 @@
 package com.exam;
 
 import com.exam.application.ExamApplicationService;
+import com.exam.application.StatsApplicationService;
 import com.exam.domain.repository.Repositories.ExamAttemptRepository;
 import com.exam.domain.repository.Repositories.QuestionBankRepository;
 import com.exam.domain.service.AttemptManager;
@@ -11,6 +12,8 @@ import com.exam.presentation.ConsoleUI;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Scanner;
+import com.exam.presentation.InstructorUI;
 
 /**
  * Configuración de inyección de dependencias y punto de entrada principal
@@ -33,10 +36,27 @@ public class Main {
     // 3. Instanciación de la Capa de Aplicación
     ExamApplicationService appService = new ExamApplicationService(
         questionRepo, attemptRepo, attemptManager, gradingService);
-
+        
+    StatsApplicationService statsService = new StatsApplicationService(attemptRepo);
     // 4. Instanciación e inicio de la Presentación
+    Scanner scanner = new Scanner(System.in);
+System.out.println("=== SISTEMA DE EVALUACIÓN ===");
+System.out.println("1) Soy Estudiante");
+System.out.println("2) Soy Docente");
+System.out.print("Seleccione opción: ");
+String opcion = scanner.nextLine();
+
+if (opcion.equals("1")) {
     ConsoleUI ui = new ConsoleUI(appService);
     ui.start();
+} else if (opcion.equals("2")) {
+    InstructorUI instructorUI = new InstructorUI(statsService);
+    instructorUI.start();
+} else {
+    System.out.println("Opción inválida.");
+}
+
+    
   }
 
   private static void generarCsvDePrueba(String path) {
