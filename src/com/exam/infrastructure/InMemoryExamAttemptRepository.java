@@ -6,6 +6,8 @@ import com.exam.domain.vo.ValueObjects.StudentId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Adaptador de infraestructura en memoria para la gestión de intentos (Fase 3).
@@ -26,4 +28,8 @@ public class InMemoryExamAttemptRepository implements ExamAttemptRepository {
   public void save(ExamAttempt attempt) {
     db.put(attempt.getStudentId(), attempt);
   }
+  @Override
+public List<ExamAttempt> findAll() {
+    return new ArrayList<>(db.values());
+}
 }
