@@ -78,13 +78,22 @@ public class SwingUI extends JFrame {
     setVisible(true);
     cardLayout.show(mainContainer, "LOGIN");
   }
-
+ // Método  abstraído y reutilizable
+  private void mostrarErrorGrafico(String msg) {
+    JOptionPane.showMessageDialog(
+        this, 
+        msg, 
+        "Error de Operación", 
+        JOptionPane.ERROR_MESSAGE
+    );
+  }
   private void iniciarExamen(String studentIdStr) {
+    // alerta validacion 
     if (studentIdStr == null || studentIdStr.trim().isEmpty()) {
-      JOptionPane.showMessageDialog(this, "El ID no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+      mostrarErrorGrafico(this, "El ID no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
-
+// bloques
     try {
       currentStudentId = new StudentId(studentIdStr.trim());
       currentAttempt = service.iniciarExamen(currentStudentId);
@@ -92,6 +101,8 @@ public class SwingUI extends JFrame {
       mostrarPreguntaActual();
     } catch (IllegalStateException | IllegalArgumentException ex) {
       JOptionPane.showMessageDialog(this, ex.getMessage(), "Atención", JOptionPane.WARNING_MESSAGE);
+    }catch (Exception ex){
+      mostrarErrorGrafico("No se puede arrancar el intento: "+ ex.getMessage())
     }
   }
 
@@ -144,6 +155,7 @@ public class SwingUI extends JFrame {
   }
 
   private void finalizarExamen() {
+    // manejo de errores
     try {
       CalificacionDTO resultado = service.finalizarExamen(currentStudentId);
       double porcentaje = ((double) resultado.puntaje() / resultado.total()) * 100;
@@ -159,8 +171,7 @@ public class SwingUI extends JFrame {
       cardLayout.show(mainContainer, "LOGIN");
 
     } catch (Exception ex) {
-      JOptionPane.showMessageDialog(this, "Error al finalizar el examen: " + ex.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      mostrarErrorGrafico("Error al finalizar el examen: " + ex.getMessage());
     }
   }
 
