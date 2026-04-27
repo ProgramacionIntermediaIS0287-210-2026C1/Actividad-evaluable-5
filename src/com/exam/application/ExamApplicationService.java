@@ -13,7 +13,9 @@ import com.exam.domain.vo.ValueObjects.Calificacion;
 import com.exam.domain.vo.ValueObjects.QuestionId;
 import com.exam.domain.vo.ValueObjects.StudentId;
 import java.util.List;
-
+// Se importan las estructuras para guardar el tiempo sin alterar el dominio
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * Application Service que orquesta los casos de uso.
  */
@@ -22,6 +24,9 @@ public class ExamApplicationService {
   private final ExamAttemptRepository attemptRepo;
   private final AttemptManager attemptManager;
   private final GradingService gradingService;
+
+ // Mapa interno para no modificar las clases de dominio ni DTOs
+  private final Map<StudentId, Long> registroTiempos = new ConcurrentHashMap<>();
 
   public ExamApplicationService(QuestionBankRepository qRepo, ExamAttemptRepository aRepo,
       AttemptManager aManager, GradingService gService) {
@@ -38,6 +43,8 @@ public class ExamApplicationService {
     if (questions.isEmpty()) {
       throw new IllegalStateException("El banco de preguntas está vacío.");
     }
+// CRITERIO 1: Registrar inicio
+registroTiempos.put(studentId, System.currentTimeMillis());
 
     ExamAttempt attempt = new ExamAttempt(studentId, questions);
     attemptRepo.save(attempt); // Persiste el inicio
@@ -57,10 +64,23 @@ public class ExamApplicationService {
     ExamAttempt attempt = attemptRepo.findActiveByStudent(studentId)
         .orElseThrow(() -> new IllegalStateException("No se encontró intento activo."));
 
+CRITERIO 2: Registrar tiempo de fin
+    long tiempoFin = System.currentTimeMillis();
+
     Calificacion calificacion = gradingService.calificar(attempt);
     attempt.finalizar(calificacion);
     attemptRepo.save(attempt); // Persiste el resultado
 
     return new CalificacionDTO(calificacion.puntaje(), calificacion.total());
+
+     //  CRITERIO 3 Y 4: Calcular diferencia e imprimir junto al DTO
+    Long tiempoInicio = registroTiempos.remove(studentId);
+    if (tiempoInicio != null) {
+      long segundosTotales = (tiempoFin - tiempoInicio) / 1000;
+      System.out.println("Tiempo total del intento: " + segundosTotales + " segundos");
+  
+   return resultadoDTO;
+   
+    }
   }
 }
