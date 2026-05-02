@@ -23,6 +23,7 @@ public class ValueObjects {
                 throw new IllegalArgumentException("la respuesta esta vacia");
             }
         }
+    
     }
 
     public record Calificacion(int puntaje, int total) {
