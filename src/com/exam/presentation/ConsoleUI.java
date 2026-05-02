@@ -32,11 +32,11 @@ public class ConsoleUI {
 
       int count = 1;
       for (Question q : attempt.questions()) {
-        System.out.println("\nPregunta " + count++ + " de " + attempt.questions().size());
+        System.out.print("Pregunta " + count++ + " de " + attempt.questions().size());
         q.displayFormat();
         boolean respondida = false;
 
-        System.out.print("Su respuesta: ");
+        
         while (!respondida) {
 
           try {
@@ -50,9 +50,7 @@ public class ConsoleUI {
             System.out.println(e.getMessage());
           }
         }
-        AnswerText answer = new AnswerText(scanner.nextLine());
-
-        service.responderPregunta(studentId, q.getId(), answer);
+        
       }
 
       CalificacionDTO resultado = service.finalizarExamen(studentId);

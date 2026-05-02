@@ -4,20 +4,20 @@ import com.exam.application.ExamApplicationService;
 import com.exam.domain.repository.Repositories.ExamAttemptRepository;
 import com.exam.domain.repository.Repositories.QuestionBankRepository;
 import com.exam.domain.service.AttemptManager;
+import com.exam.domain.service.ExportService;
 import com.exam.domain.service.GradingService;
 import com.exam.infrastructure.CsvQuestionBankRepository;
+import com.exam.infrastructure.FileExportService;
 import com.exam.infrastructure.InMemoryExamAttemptRepository;
 import com.exam.presentation.SwingUI;
-
-import javax.swing.SwingUtilities;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.swing.SwingUtilities;
 
 /**
- * Nueva clase Main configurada para ejecutar la interfaz gráfica basada en
- * Swing.
- * Realiza la inyección manual de dependencias y carga el caso de uso central.
+ * Main para ejecutar la interfaz gráfica Swing.
+ * Configura e inyecta todas las dependencias del sistema.
  */
 public class MainSwing {
 
@@ -25,7 +25,7 @@ public class MainSwing {
     String csvPath = "banco_preguntas_test.csv";
     generarCsvDePrueba(csvPath);
 
-    // 1. Inyección de Dependencias (Capa de Infraestructura)
+    // 1. Infraestructura y Repositorios
     QuestionBankRepository questionRepo = new CsvQuestionBankRepository(csvPath);
     ExamAttemptRepository attemptRepo = new InMemoryExamAttemptRepository();
 
@@ -33,17 +33,26 @@ public class MainSwing {
     AttemptManager attemptManager = new AttemptManager(attemptRepo);
     GradingService gradingService = new GradingService();
 
-    // 3. Casos de Uso (Application Service)
-    ExamApplicationService appService = new ExamApplicationService(
-        questionRepo, attemptRepo, attemptManager, gradingService);
+    // 3. Servicio de Exportación (NUEVO)
+    ExportService exportService = new FileExportService();
 
-    // 4. Lanzamiento asíncrono seguro de la interfaz gráfica Swing
+    // 4. Application Service (con TODAS las dependencias)
+    ExamApplicationService appService = new ExamApplicationService(
+        questionRepo,
+        attemptRepo,
+        attemptManager,
+        gradingService,
+        exportService
+    );
+
+    // 5. Lanzamiento de la interfaz gráfica
     SwingUtilities.invokeLater(() -> {
       try {
-        // Para darle un aspecto moderno nativo al sistema operativo
-        javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+        javax.swing.UIManager.setLookAndFeel(
+            javax.swing.UIManager.getSystemLookAndFeelClassName()
+        );
       } catch (Exception e) {
-        e.printStackTrace();
+        System.out.println("Error al cargar interfaz: " + e.getMessage());
       }
 
       SwingUI ui = new SwingUI(appService);
@@ -51,6 +60,7 @@ public class MainSwing {
     });
   }
 
+  // Método para generar CSV de prueba
   private static void generarCsvDePrueba(String path) {
     try (PrintWriter writer = new PrintWriter(new FileWriter(path))) {
       writer.println("TIPO;ENUNCIADO;OPCIONES;RESPUESTAS_CORRECTAS");

@@ -4,8 +4,10 @@ import com.exam.application.ExamApplicationService;
 import com.exam.domain.repository.Repositories.ExamAttemptRepository;
 import com.exam.domain.repository.Repositories.QuestionBankRepository;
 import com.exam.domain.service.AttemptManager;
+import com.exam.domain.service.ExportService;
 import com.exam.domain.service.GradingService;
 import com.exam.infrastructure.CsvQuestionBankRepository;
+import com.exam.infrastructure.FileExportService;
 import com.exam.infrastructure.InMemoryExamAttemptRepository;
 import com.exam.presentation.ConsoleUI;
 import java.io.FileWriter;
@@ -29,10 +31,17 @@ public class Main {
     // 2. Instanciación de Servicios de Dominio
     AttemptManager attemptManager = new AttemptManager(attemptRepo);
     GradingService gradingService = new GradingService();
+    ExportService exportService = new FileExportService();
+    
 
     // 3. Instanciación de la Capa de Aplicación
     ExamApplicationService appService = new ExamApplicationService(
-        questionRepo, attemptRepo, attemptManager, gradingService);
+    questionRepo, 
+    attemptRepo, 
+    attemptManager, 
+    gradingService,
+    exportService
+);
 
     // 4. Instanciación e inicio de la Presentación
     ConsoleUI ui = new ConsoleUI(appService);

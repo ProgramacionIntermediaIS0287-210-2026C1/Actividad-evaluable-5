@@ -40,6 +40,7 @@ public class QuestionTypes {
     }
 
     @Override
+    
     public void displayFormat() {
       System.out.println("[Verdadero / Falso] (Escriba V o F)");
       System.out.println(text + "\n  ( ) V\n  ( ) F");
