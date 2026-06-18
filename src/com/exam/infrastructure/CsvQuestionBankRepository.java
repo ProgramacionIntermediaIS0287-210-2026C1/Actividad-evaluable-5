@@ -31,8 +31,15 @@ public class CsvQuestionBankRepository implements QuestionBankRepository {
       int lineNum = 0;
       while ((line = br.readLine()) != null) {
         lineNum++;
-        if (lineNum == 1)
-          continue; // Saltar cabecera
+        if (lineNum == 1)continue; // Saltar cabecera
+
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+        String contentOnly = line.replace(";", "").trim();
+        if (contentOnly.isEmpty()) {
+          continue;
+        }
 
         try {
           questions.add(parseQuestion(line, lineNum));
@@ -48,16 +55,16 @@ public class CsvQuestionBankRepository implements QuestionBankRepository {
   }
 
   private Question parseQuestion(String line, int idStr) {
-    String[] parts = line.split(";");
+    String[] parts = line.split(";", -1);
     if (parts.length < 4 && !parts[0].equals("TF") && !parts[0].equals("FB")) {
       throw new IllegalArgumentException("Datos insuficientes en la fila.");
     }
 
     QuestionId id = new QuestionId(String.valueOf(idStr));
-    String type = parts[0];
-    String text = parts[1];
-    String options = parts.length > 2 ? parts[2] : "";
-    AnswerText correct = new AnswerText(parts.length > 3 ? parts[3] : "");
+    String type = parts[0].trim();
+    String text = parts[1].trim();
+    String options = parts.length > 2 ? parts[2].trim() : "";
+    AnswerText correct = new AnswerText(parts.length > 3 ? parts[3].trim() : "");
 
     return switch (type) {
       case "SC" -> new QuestionTypes.SingleChoiceQuestion(id, text, Arrays.asList(options.split(",")), correct);
